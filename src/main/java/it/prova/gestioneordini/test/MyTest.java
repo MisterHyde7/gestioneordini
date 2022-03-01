@@ -368,6 +368,7 @@ public class MyTest {
 		if (articoloDaDissociare.getId() == null)
 			throw new RuntimeException("errore insert articolo");
 
+		//Dissocio ordine da articolo
 		ordineService.dissociaOrdineDaArticolo(ordine.getId(), articoloDaDissociare.getId());
 
 		System.out.println("========== test eseguito con successo ==========");

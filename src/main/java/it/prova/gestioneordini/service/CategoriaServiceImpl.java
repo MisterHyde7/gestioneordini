@@ -8,6 +8,7 @@ import it.prova.gestioneordini.dao.EntityManagerUtil;
 import it.prova.gestioneordini.dao.categoria.CategoriaDAO;
 import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
+import it.prova.gestioneordini.model.Ordine;
 
 public class CategoriaServiceImpl implements CategoriaService {
 
@@ -170,7 +171,8 @@ public class CategoriaServiceImpl implements CategoriaService {
 	}
 
 	@Override
-	public void creaECollegaCategoriaEArticolo(Categoria categoriaTransientInstance, Articolo articoloTransientInstance) throws Exception {
+	public void creaECollegaCategoriaEArticolo(Categoria categoriaTransientInstance, Articolo articoloTransientInstance)
+			throws Exception {
 		// questo è come una connection
 		EntityManager entityManager = EntityManagerUtil.getEntityManager();
 
@@ -214,7 +216,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 
 	@Override
 	public Categoria caricaCategoriaConArticoli(Categoria categoriaInstance) throws Exception {
-		
+
 		EntityManager entityManager = EntityManagerUtil.getEntityManager();
 
 		try {
@@ -224,6 +226,26 @@ public class CategoriaServiceImpl implements CategoriaService {
 			// eseguo quello che realmente devo fare
 			return categoriaDAO.caricaCategoriaConArticoli();
 
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
+	@Override
+	public List<Categoria> dammiTutteLeCategorieInOrdine(Ordine ordineInput) throws Exception {
+
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			categoriaDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return categoriaDAO.dammiCategorieDiArticoliInOrdine(ordineInput.getId());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

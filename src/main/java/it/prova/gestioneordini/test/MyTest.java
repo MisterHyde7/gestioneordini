@@ -47,6 +47,8 @@ public class MyTest {
 			// Per casa
 			testCercaOrdineConDataCategoria(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
 
+			testCercaCategorieInOrdine(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
+
 		} catch (Throwable e) {
 
 			e.printStackTrace();
@@ -436,6 +438,70 @@ public class MyTest {
 		// Cerco l'ordine
 		List<Ordine> ordiniConCategoria = ordineService.cercaTuttiGliOrdiniConCategoria(categoriaPerRicerca1);
 		if (ordiniConCategoria.isEmpty() || ordiniConCategoria == null || ordiniConCategoria.size() < 1)
+			throw new RuntimeException("ricerca fallita");
+
+		System.out.println("========== test eseguito con successo ==========");
+
+	}
+
+	private static void testCercaCategorieInOrdine(OrdineService ordineService, ArticoloService articoloService,
+			CategoriaService categoriaService) throws Exception {
+
+		System.out.println("========== Inizio test ==========");
+
+		// Creo ordine
+		Ordine ordinePerRicerca = new Ordine("carlo", "via solis", new Date());
+		if (ordinePerRicerca.getId() != null)
+			throw new RuntimeException("ordine gia regisrato su database");
+
+		// Inserisco ordine
+		ordineService.inserisciNuovo(ordinePerRicerca);
+		if (ordinePerRicerca.getId() == null)
+			throw new RuntimeException("insert non riuscita");
+
+		// Creo categorie
+		Categoria categoriaPerRicerca = new Categoria("gioco", "gioco01");
+		if (categoriaPerRicerca.getId() != null)
+			throw new RuntimeException("categoria gia registrata su database");
+		Categoria categoriaPerRicerca1 = new Categoria("funny", "fun7");
+		if (categoriaPerRicerca1.getId() != null)
+			throw new RuntimeException("categoria gia registrata su database");
+
+		// Inserisco categorie
+		categoriaService.inserisciNuovo(categoriaPerRicerca);
+		categoriaService.inserisciNuovo(categoriaPerRicerca1);
+		if (categoriaPerRicerca.getId() == null || categoriaPerRicerca1.getId() == null)
+			throw new RuntimeException("insert non riuscita");
+
+		// Creo il set di categorie
+		Set<Categoria> setDiCategorie = new HashSet<Categoria>();
+		setDiCategorie.add(categoriaPerRicerca);
+		setDiCategorie.add(categoriaPerRicerca1);
+
+		// Creo articolo
+		Articolo articoloPerRicerca = new Articolo("videogioco", "cd25", 69, new Date());
+		if (articoloPerRicerca.getId() != null)
+			throw new RuntimeException("articolo gia registrato su database");
+
+		articoloPerRicerca.setCategorie(setDiCategorie);
+		articoloPerRicerca.setOrdine(ordinePerRicerca);
+
+		// Inserisco articolo
+		articoloService.inserisciNuovo(articoloPerRicerca);
+		if (articoloPerRicerca.getId() == null)
+			throw new RuntimeException("insert non riuscita");
+
+		// Aggiungo categoria ad articolo
+		articoloService.aggiungiCategoria(categoriaPerRicerca, articoloPerRicerca);
+		if (articoloPerRicerca.getCategorie().isEmpty())
+			throw new RuntimeException("errore nell'accoppiamento della categoria");
+		articoloService.aggiungiCategoria(categoriaPerRicerca1, articoloPerRicerca);
+		if (articoloPerRicerca.getCategorie().isEmpty())
+			throw new RuntimeException("errore nell'accoppiamento della categoria");
+
+		// Cerco le categorie
+		List<Categoria> categorieInOrdine = categoriaService.dammiTutteLeCategorieInOrdine(ordinePerRicerca);
+		if (categorieInOrdine.isEmpty() || categorieInOrdine == null || categorieInOrdine.size() < 2)
 			throw new RuntimeException("ricerca fallita");
 
 		System.out.println("========== test eseguito con successo ==========");

@@ -3,6 +3,7 @@ package it.prova.gestioneordini.dao.categoria;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import it.prova.gestioneordini.model.Categoria;
 
@@ -54,6 +55,16 @@ public class CategoriaDAOImpl implements CategoriaDAO {
 		return entityManager
 				.createQuery("select c from Categoria c left join fetch c.articoli a where c.id = 28", Categoria.class)
 				.getSingleResult();
+	}
+
+	@Override
+	public List<Categoria> dammiCategorieDiArticoliInOrdine(Long idOrdine) throws Exception {
+		
+		TypedQuery<Categoria> query = entityManager.createQuery(
+				"select distinct c from Categoria c left join c.articoli a left join a.ordine o where o.id = :idOrdine ",
+				Categoria.class).setParameter("idOrdine", idOrdine);
+		return query.getResultList();
+		
 	}
 
 }

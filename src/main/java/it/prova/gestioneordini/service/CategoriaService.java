@@ -5,6 +5,7 @@ import java.util.List;
 import it.prova.gestioneordini.dao.categoria.CategoriaDAO;
 import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
+import it.prova.gestioneordini.model.Ordine;
 
 public interface CategoriaService {
 
@@ -24,6 +25,8 @@ public interface CategoriaService {
 	void aggiungiArticolo(Categoria categoriaInstance, Articolo articoloInstance) throws Exception;
 	
 	public Categoria caricaCategoriaConArticoli(Categoria categoriaInstance) throws Exception;
+	
+	public List<Categoria> dammiTutteLeCategorieInOrdine(Ordine ordineInput) throws Exception;
 
 	// per injection
 	public void setCategoriaDAO(CategoriaDAO categoriaDAO);

@@ -131,5 +131,15 @@ public class Articolo {
 	public void setOrdine(Ordine ordine) {
 		this.ordine = ordine;
 	}
+	
+	public void addToCategoria(Categoria categoriaInstance) {
+		this.categorie.add(categoriaInstance);
+		categoriaInstance.getArticoli().add(this);
+	}
+
+	public void removeFromCategoria(Categoria categoriaInstance) {
+		this.categorie.remove(categoriaInstance);
+		categoriaInstance.getArticoli().remove(this);
+	}
 
 }

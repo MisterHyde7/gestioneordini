@@ -39,6 +39,8 @@ public class MyTest {
 
 			testCaricaOrdineEager(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
 
+			testRemoveDiArticolo(articoloServiceInstance, ordineServiceInstance, categoriaServiceInstance);
+
 		} catch (Throwable e) {
 			e.printStackTrace();
 		} finally {
@@ -262,6 +264,51 @@ public class MyTest {
 		Ordine ordineFetch = ordineService.caricaOrdineEager(ordinePerRicercaEager);
 		if (ordineFetch.getArticoli().isEmpty())
 			throw new RuntimeException("errore fetch eager");
+
+		System.out.println("========== test eseguito con successo ==========");
+	}
+
+	private static void testRemoveDiArticolo(ArticoloService articoloService, OrdineService ordineService,
+			CategoriaService categoriaService) throws Exception {
+		System.out.println("========== Inizio test ==========");
+
+		Ordine ordine = new Ordine();
+		if (ordine.getId() != null)
+			throw new RuntimeException("ordine gia presente su db");
+
+		ordineService.inserisciNuovo(ordine);
+		if (ordine.getId() == null)
+			throw new RuntimeException("errore nell'inserimento dell'ordine");
+
+		Articolo articoloRemove = new Articolo("articolo", "123", 50, new Date());
+		if (articoloRemove.getId() != null)
+			throw new RuntimeException("articolo gia presente");
+
+		articoloRemove.setOrdine(ordine);
+
+		articoloService.inserisciNuovo(articoloRemove);
+		if (articoloRemove.getId() == null)
+			throw new RuntimeException("errore nell'inserimento dell'articolo");
+
+		Categoria categoriaAssociata = new Categoria("cosa", "cosa123");
+		if (categoriaAssociata.getId() != null)
+			throw new RuntimeException("categoria gia presente");
+
+		categoriaService.inserisciNuovo(categoriaAssociata);
+		if (categoriaAssociata.getId() == null)
+			throw new RuntimeException("errore nell'inserimento della categoria");
+		
+		Set<Categoria> categorieArticolo = new HashSet<Categoria>();
+		categorieArticolo.add(categoriaAssociata);
+		
+		articoloRemove.setCategorie(categorieArticolo);
+		articoloService.aggiorna(articoloRemove);
+
+		articoloService.aggiungiCategoria(categoriaAssociata, articoloRemove);
+		if (articoloRemove.getCategorie().isEmpty())
+			throw new RuntimeException("errore nell'accoppiamento della categoria");
+
+		articoloService.dissociaArticoloDaiCampi(articoloRemove.getId(), categoriaAssociata.getId());
 
 		System.out.println("========== test eseguito con successo ==========");
 	}

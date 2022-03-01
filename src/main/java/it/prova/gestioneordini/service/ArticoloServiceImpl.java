@@ -6,12 +6,15 @@ import javax.persistence.EntityManager;
 
 import it.prova.gestioneordini.dao.EntityManagerUtil;
 import it.prova.gestioneordini.dao.articolo.ArticoloDAO;
+import it.prova.gestioneordini.dao.categoria.CategoriaDAO;
 import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
 
 public class ArticoloServiceImpl implements ArticoloService {
 
 	private ArticoloDAO articoloDAO;
+
+	private CategoriaDAO categoriaDAO;
 
 	@Override
 	public List<Articolo> listAll() throws Exception {
@@ -134,7 +137,7 @@ public class ArticoloServiceImpl implements ArticoloService {
 
 	@Override
 	public void aggiungiCategoria(Categoria categoriaInstance, Articolo articoloInstance) throws Exception {
-		
+
 		EntityManager entityManager = EntityManagerUtil.getEntityManager();
 
 		try {
@@ -170,7 +173,7 @@ public class ArticoloServiceImpl implements ArticoloService {
 
 	@Override
 	public Articolo caricaArticoloConCategoria(Articolo articoloInstance) throws Exception {
-		
+
 		EntityManager entityManager = EntityManagerUtil.getEntityManager();
 
 		try {
@@ -190,7 +193,7 @@ public class ArticoloServiceImpl implements ArticoloService {
 
 	@Override
 	public void rimuoviArticoloSenzaCampi(Articolo articoloInstance) throws Exception {
-		
+
 		EntityManager entityManager = EntityManagerUtil.getEntityManager();
 
 		try {
@@ -201,9 +204,49 @@ public class ArticoloServiceImpl implements ArticoloService {
 			articoloDAO.setEntityManager(entityManager);
 
 			// eseguo quello che realmente devo fare
-			articoloDAO.rimuoviArticoloSenzaAltriCampi(articoloInstance);;
+			articoloDAO.rimuoviArticoloSenzaAltriCampi(articoloInstance);
+			;
 
 			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
+	@Override
+	public void setCategoriaDAO(CategoriaDAO categoriaDAO) {
+		this.categoriaDAO = categoriaDAO;
+	}
+
+	@Override
+	public void dissociaArticoloDaiCampi(Long idArticolo, Long idCategoria) throws Exception {
+
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+
+			// questo è come il MyConnection.getConnection()
+			entityManager.getTransaction().begin();
+
+			// uso l'injection per il dao
+			articoloDAO.setEntityManager(entityManager);
+
+			categoriaDAO.setEntityManager(entityManager);
+
+			Articolo articoloDaDissociare = articoloDAO.get(idArticolo);
+
+			Categoria categoriaDaDissociare = categoriaDAO.get(idCategoria);
+
+			articoloDaDissociare.removeFromCategoria(categoriaDaDissociare);
+
+			articoloDAO.delete(articoloDaDissociare);
+
+			entityManager.getTransaction().commit();
+
 		} catch (Exception e) {
 			entityManager.getTransaction().rollback();
 			e.printStackTrace();

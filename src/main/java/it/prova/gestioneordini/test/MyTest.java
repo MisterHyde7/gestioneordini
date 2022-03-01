@@ -52,6 +52,9 @@ public class MyTest {
 			testCalcolaCostoTotaleDataCategoria(articoloServiceInstance, categoriaServiceInstance,
 					ordineServiceInstance);
 
+			testCaricaOrdineRecenteConCategoria(ordineServiceInstance, articoloServiceInstance,
+					categoriaServiceInstance);
+
 		} catch (Throwable e) {
 
 			e.printStackTrace();
@@ -583,6 +586,78 @@ public class MyTest {
 		Long totaleCosto = articoloService.calcolaTotaleOrdinePerCategoria(categoriaPerCalcolo);
 		if (totaleCosto % 150 != 0)
 			throw new RuntimeException("calcolo fallito");
+
+		System.out.println("========== test eseguito con successo ==========");
+
+	}
+
+	private static void testCaricaOrdineRecenteConCategoria(OrdineService ordineService,
+			ArticoloService articoloService, CategoriaService categoriaService) throws Exception {
+
+		System.out.println("========== Inizio test ==========");
+
+		// Creo ordini
+		Ordine ordinePerRicerca = new Ordine("irene", "via amico",
+				new SimpleDateFormat("dd/MM/yyyy").parse("31/01/2022"));
+		if (ordinePerRicerca.getId() != null)
+			throw new RuntimeException("ordine gia regisrato su database");
+
+		Ordine ordinePerRicerca1 = new Ordine("irene", "via amico",
+				new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2022"));
+		if (ordinePerRicerca1.getId() != null)
+			throw new RuntimeException("ordine gia regisrato su database");
+
+		// Inserisco ordini
+		ordineService.inserisciNuovo(ordinePerRicerca);
+		ordineService.inserisciNuovo(ordinePerRicerca1);
+		if (ordinePerRicerca.getId() == null || ordinePerRicerca1.getId() == null)
+			throw new RuntimeException("insert non riuscita");
+
+		// Creo categoria
+		Categoria categoriaPerRicerca = new Categoria("piante", "pianta1");
+		if (categoriaPerRicerca.getId() != null)
+			throw new RuntimeException("categoria gia registrata su database");
+
+		// Inserisco categoria
+		categoriaService.inserisciNuovo(categoriaPerRicerca);
+
+		// Creo il set di categorie
+		Set<Categoria> setDiCategorie = new HashSet<Categoria>();
+		setDiCategorie.add(categoriaPerRicerca);
+
+		// Creo articoli
+		Articolo articoloPerRicerca = new Articolo("albero", "forest", 700, new Date());
+		if (articoloPerRicerca.getId() != null)
+			throw new RuntimeException("articolo gia registrato su database");
+
+		Articolo articoloPerRicerca1 = new Articolo("foglia", "leafy", 10, new Date());
+		if (articoloPerRicerca.getId() != null)
+			throw new RuntimeException("articolo gia registrato su database");
+
+		articoloPerRicerca.setCategorie(setDiCategorie);
+		articoloPerRicerca1.setCategorie(setDiCategorie);
+
+		articoloPerRicerca.setOrdine(ordinePerRicerca);
+		articoloPerRicerca1.setOrdine(ordinePerRicerca1);
+
+		// Inserisco articoli
+		articoloService.inserisciNuovo(articoloPerRicerca);
+		articoloService.inserisciNuovo(articoloPerRicerca1);
+		if (articoloPerRicerca.getId() == null || articoloPerRicerca1.getId() == null)
+			throw new RuntimeException("insert non riuscita");
+
+		// Aggiungo categoria ad articolo
+		articoloService.aggiungiCategoria(categoriaPerRicerca, articoloPerRicerca);
+		if (articoloPerRicerca.getCategorie().isEmpty())
+			throw new RuntimeException("errore nell'accoppiamento della categoria");
+
+		articoloService.aggiungiCategoria(categoriaPerRicerca, articoloPerRicerca1);
+		if (articoloPerRicerca.getCategorie().isEmpty())
+			throw new RuntimeException("errore nell'accoppiamento della categoria");
+
+		Ordine ordinePiuRecente = ordineService.dammiOrdinePiuRecenteDataCategoria(categoriaPerRicerca);
+		if (ordinePiuRecente.getDataSpedizione().after(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2022")))
+			throw new RuntimeException("errore nella ricerca del pacco recente");
 
 		System.out.println("========== test eseguito con successo ==========");
 

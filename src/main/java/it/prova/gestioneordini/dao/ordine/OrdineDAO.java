@@ -14,4 +14,6 @@ public interface OrdineDAO extends IBaseDAO<Ordine> {
 
 	public List<Ordine> dammiTuttiGliOrdiniDataLaCategoria(Categoria categoriaInput) throws Exception;
 
+	public List<Ordine> dammiOrdineRecentePerCategoria(Categoria categoriaInput) throws Exception;
+
 }

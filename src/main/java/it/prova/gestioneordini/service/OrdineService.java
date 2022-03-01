@@ -19,20 +19,22 @@ public interface OrdineService {
 	public void inserisciNuovo(Ordine ordineInstance) throws Exception;
 
 	public void rimuovi(Ordine ordineInstance) throws Exception;
-	
+
 	public void aggiungiArticolo(Ordine ordineInstance, Articolo articoloInstance) throws Exception;
-	
+
 	public Ordine caricaOrdineConArticoli(Ordine ordineInstances) throws Exception;
-	
+
 	public Ordine caricaOrdineEager(Ordine ordineInstances) throws Exception;
-	
+
 	public void dissociaOrdineDaArticolo(Long idArticolo, Long idOrdine) throws Exception;
-	
+
 	public List<Ordine> cercaTuttiGliOrdiniConCategoria(Categoria categoriaInput) throws Exception;
+
+	public Ordine dammiOrdinePiuRecenteDataCategoria(Categoria categoriaInput) throws Exception;
 
 	// per injection
 	public void setOrdineDAO(OrdineDAO ordineDAO);
-	
+
 	public void setArticoloDAO(ArticoloDAO articoloDAO);
 
 }

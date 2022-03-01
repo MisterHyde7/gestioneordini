@@ -251,7 +251,7 @@ public class OrdineServiceImpl implements OrdineService {
 
 	@Override
 	public List<Ordine> cercaTuttiGliOrdiniConCategoria(Categoria categoriaInput) throws Exception {
-		
+
 		EntityManager entityManager = EntityManagerUtil.getEntityManager();
 
 		try {
@@ -260,7 +260,36 @@ public class OrdineServiceImpl implements OrdineService {
 
 			// eseguo quello che realmente devo fare
 			return ordineDAO.dammiTuttiGliOrdiniDataLaCategoria(categoriaInput);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
+	@Override
+	public Ordine dammiOrdinePiuRecenteDataCategoria(Categoria categoriaInput) throws Exception {
+
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			ordineDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			List<Ordine> listaOrdiniConCategoria = ordineDAO.dammiOrdineRecentePerCategoria(categoriaInput);
+
+			Ordine ordineRecente = listaOrdiniConCategoria.get(0);
+
+			for (Ordine ordineItem : listaOrdiniConCategoria) {
+				if (ordineItem.getDataSpedizione().before(ordineRecente.getDataSpedizione()))
+					ordineRecente = ordineItem;
+			}
 			
+			return ordineRecente;
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

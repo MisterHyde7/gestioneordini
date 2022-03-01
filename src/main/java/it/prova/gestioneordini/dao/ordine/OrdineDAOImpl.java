@@ -76,4 +76,13 @@ public class OrdineDAOImpl implements OrdineDAO {
 		
 	}
 
+	@Override
+	public List<Ordine> dammiOrdineRecentePerCategoria(Categoria categoriaInput) throws Exception {
+		
+		TypedQuery<Ordine> query = entityManager.createQuery(
+				"select o from Ordine o left join o.articoli a left join a.categorie c where c.codice = :codiceInput ",
+				Ordine.class).setParameter("codiceInput", categoriaInput.getCodice());
+		return query.getResultList();
+	}
+
 }

@@ -32,6 +32,7 @@ public class MyServiceFactory {
 			ordineServiceInstance = new OrdineServiceImpl();
 
 		ordineServiceInstance.setOrdineDAO(MyDaoFactory.getOrdineDAOInstance());
+		ordineServiceInstance.setArticoloDAO(MyDaoFactory.getArticoloDAOInstance());
 
 		return ordineServiceInstance;
 	}

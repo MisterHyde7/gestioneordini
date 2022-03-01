@@ -41,6 +41,8 @@ public class MyTest {
 
 			testRemoveDiArticolo(articoloServiceInstance, ordineServiceInstance, categoriaServiceInstance);
 
+			testDissociaOrdine(ordineServiceInstance, articoloServiceInstance);
+
 		} catch (Throwable e) {
 
 			e.printStackTrace();
@@ -338,6 +340,35 @@ public class MyTest {
 
 		// Dissocio articolo
 		articoloService.dissociaArticoloDaiCampi(articoloRemove.getId(), categoriaAssociata.getId());
+
+		System.out.println("========== test eseguito con successo ==========");
+	}
+
+	private static void testDissociaOrdine(OrdineService ordineService, ArticoloService articoloService)
+			throws Exception {
+		System.out.println("========== Inizio test ==========");
+
+		// Creo ordine
+		Ordine ordine = new Ordine();
+		if (ordine.getId() != null)
+			throw new RuntimeException("ordine gia presente su db");
+
+		ordineService.inserisciNuovo(ordine);
+		if (ordine.getId() == null)
+			throw new RuntimeException("errore insert ordine");
+
+		// Creo articolo
+		Articolo articoloDaDissociare = new Articolo("record", "777", 500, new Date());
+		if (articoloDaDissociare.getId() != null)
+			throw new RuntimeException("articolo gia presente");
+
+		articoloDaDissociare.setOrdine(ordine);
+
+		articoloService.inserisciNuovo(articoloDaDissociare);
+		if (articoloDaDissociare.getId() == null)
+			throw new RuntimeException("errore insert articolo");
+
+		ordineService.dissociaOrdineDaArticolo(ordine.getId(), articoloDaDissociare.getId());
 
 		System.out.println("========== test eseguito con successo ==========");
 	}

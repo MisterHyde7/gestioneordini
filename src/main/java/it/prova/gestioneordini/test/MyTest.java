@@ -42,10 +42,11 @@ public class MyTest {
 			testRemoveDiArticolo(articoloServiceInstance, ordineServiceInstance, categoriaServiceInstance);
 
 		} catch (Throwable e) {
+
 			e.printStackTrace();
+
 		} finally {
-			// questa è necessaria per chiudere tutte le connessioni quindi rilasciare il
-			// main
+
 			EntityManagerUtil.shutdown();
 		}
 
@@ -54,6 +55,7 @@ public class MyTest {
 	private static void testInsertOrdine(OrdineService ordineService) throws Exception {
 		System.out.println("========== Inizio test ==========");
 
+		// Creo ordine
 		Ordine ordineDaInserire = new Ordine(null, "via prova", new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2022"));
 		if (ordineDaInserire.getId() != null)
 			throw new RuntimeException("ordine gia esistente");
@@ -71,6 +73,7 @@ public class MyTest {
 	private static void testInsertCategoria(CategoriaService categoriaService) throws Exception {
 		System.out.println("========== Inizio test ==========");
 
+		// Creo categoria
 		Categoria categoriaDaInserire = new Categoria("music", "music1");
 		if (categoriaDaInserire.getId() != null)
 			throw new RuntimeException("categoria gia esistente");
@@ -88,11 +91,13 @@ public class MyTest {
 
 		System.out.println("========== Inizio test ==========");
 
+		// Creo ordine
 		Ordine ordineDaRiempire = new Ordine("carlo", "via carlo", new Date());
 		ordineService.inserisciNuovo(ordineDaRiempire);
 		if (ordineDaRiempire.getId() == null)
 			throw new RuntimeException("ordine non inserito");
 
+		// Creo articolo
 		Articolo articoloDaInserireInOrdine = new Articolo("pupazzo", "pupazzo01", 10, new Date());
 		articoloDaInserireInOrdine.setOrdine(ordineDaRiempire);
 		articoloService.inserisciNuovo(articoloDaInserireInOrdine);
@@ -112,6 +117,7 @@ public class MyTest {
 
 		System.out.println("========== Inizio test ==========");
 
+		// Creo categoria
 		Categoria categoriaDaRiempire = new Categoria("libro", "libro01");
 		categoriaService.inserisciNuovo(categoriaDaRiempire);
 		if (categoriaDaRiempire.getId() == null)
@@ -120,9 +126,11 @@ public class MyTest {
 		Set<Categoria> listaCategorie = new HashSet<Categoria>();
 		listaCategorie.add(categoriaDaRiempire);
 
+		// Creo ordine
 		Ordine ordinePerArticolo = new Ordine("luca", "via amico", new Date());
 		ordineService.inserisciNuovo(ordinePerArticolo);
 
+		// Creo articolo
 		Articolo articoloDaInserireInOrdine = new Articolo("pupazzo", "pupazzo01", 10, new Date());
 		articoloDaInserireInOrdine.setOrdine(ordinePerArticolo);
 		articoloDaInserireInOrdine.setCategorie(listaCategorie);
@@ -131,6 +139,7 @@ public class MyTest {
 		if (articoloDaInserireInOrdine.getId() == null)
 			throw new RuntimeException("articolo non inserito");
 
+		// Inserisco l'articolo alla categoria
 		categoriaService.aggiungiArticolo(categoriaDaRiempire, articoloDaInserireInOrdine);
 
 		if (categoriaService.caricaCategoriaConArticoli(categoriaDaRiempire).getArticoli().size() != 1)
@@ -144,6 +153,7 @@ public class MyTest {
 
 		System.out.println("========== Inizio test ==========");
 
+		// Creo categoria
 		Categoria categoria = new Categoria("cibo", "cibo07");
 		categoriaService.inserisciNuovo(categoria);
 		if (categoria.getId() == null)
@@ -152,9 +162,11 @@ public class MyTest {
 		Set<Categoria> listaCategorie = new HashSet<Categoria>();
 		listaCategorie.add(categoria);
 
+		// Creo ordine
 		Ordine ordinePerArticolo = new Ordine("luca", "via amico", new Date());
 		ordineService.inserisciNuovo(ordinePerArticolo);
 
+		// Creo articolo
 		Articolo articoloDaCategorizzare = new Articolo("pupazzo", "pupazzo01", 10, new Date());
 		articoloDaCategorizzare.setOrdine(ordinePerArticolo);
 		articoloDaCategorizzare.setCategorie(listaCategorie);
@@ -163,6 +175,7 @@ public class MyTest {
 		if (articoloDaCategorizzare.getId() == null)
 			throw new RuntimeException("articolo non inserito");
 
+		// Aggiungo la categoria all'articolo
 		articoloService.aggiungiCategoria(categoria, articoloDaCategorizzare);
 
 		if (articoloService.caricaArticoloConCategoria(articoloDaCategorizzare).getCategorie().size() != 1)
@@ -174,6 +187,7 @@ public class MyTest {
 	private static void testUpdateOrdine(OrdineService ordineService) throws Exception {
 		System.out.println("========== Inizio test ==========");
 
+		// Creo ordine
 		Ordine ordinePerUpdate = new Ordine("franco", "via franchi", new Date());
 		ordineService.inserisciNuovo(ordinePerUpdate);
 		if (ordinePerUpdate.getId() == null)
@@ -181,6 +195,7 @@ public class MyTest {
 
 		ordinePerUpdate.setNomeDestinatario("franchino");
 
+		// Aggiorno i dati dell'ordine
 		ordineService.aggiorna(ordinePerUpdate);
 		if (!ordinePerUpdate.getNomeDestinatario().equals("franchino"))
 			throw new RuntimeException("update fallito");
@@ -192,6 +207,7 @@ public class MyTest {
 			CategoriaService categoriaService, OrdineService ordineService) throws Exception {
 		System.out.println("========== Inizio test ==========");
 
+		// Creo categoria
 		Categoria categoriaDaRimuovere = new Categoria("cose", "cose07");
 		categoriaService.inserisciNuovo(categoriaDaRimuovere);
 		if (categoriaDaRimuovere.getId() == null)
@@ -200,9 +216,11 @@ public class MyTest {
 		Set<Categoria> listaCategorie = new HashSet<Categoria>();
 		listaCategorie.add(categoriaDaRimuovere);
 
+		// Creo ordine
 		Ordine ordinePerArticoloDaEliminare = new Ordine("test", "via test", new Date());
 		ordineService.inserisciNuovo(ordinePerArticoloDaEliminare);
 
+		// Creo articolo
 		Articolo articoloDaEliminare = new Articolo("pupazzo", "pupazzo01", 10, new Date());
 		articoloDaEliminare.setOrdine(ordinePerArticoloDaEliminare);
 		articoloDaEliminare.setCategorie(listaCategorie);
@@ -211,6 +229,7 @@ public class MyTest {
 		if (articoloDaEliminare.getId() == null)
 			throw new RuntimeException("articolo non inserito");
 
+		// Collego la categoria all'articolo
 		articoloService.aggiungiCategoria(categoriaDaRimuovere, articoloDaEliminare);
 
 		if (articoloService.caricaArticoloConCategoria(articoloDaEliminare).getCategorie().size() != 1)
@@ -219,6 +238,7 @@ public class MyTest {
 		Set<Categoria> categorieDaSalvare = articoloDaEliminare.getCategorie();
 		Ordine ordineDaSalvare = articoloDaEliminare.getOrdine();
 
+		// Rimuovo l'articolo senza toccare gli altri campi
 		articoloService.rimuoviArticoloSenzaCampi(articoloDaEliminare);
 
 		if (categorieDaSalvare == null || ordineDaSalvare == null)
@@ -231,12 +251,15 @@ public class MyTest {
 			CategoriaService categoriaService) throws Exception {
 		System.out.println("========== Inizio test ==========");
 
+		// Creo ordine
 		Ordine ordinePerRicercaEager = new Ordine("prova", "via prova", new Date());
 
+		// Creo categoria
 		Set<Categoria> listaCategorie = new HashSet<Categoria>();
 		Categoria categoriaPerFetch = new Categoria("vista", "vista01");
 		listaCategorie.add(categoriaPerFetch);
 
+		// Creo articolo
 		Set<Articolo> articoli = new HashSet<Articolo>();
 		Articolo articoloPerFetchEager = new Articolo("occhiale", "occhiale01", 10, new Date());
 		articoloPerFetchEager.setOrdine(ordinePerRicercaEager);
@@ -261,6 +284,7 @@ public class MyTest {
 		if (ordinePerRicercaEager.getArticoli().isEmpty())
 			throw new RuntimeException("errore update ordine eager");
 
+		// Faccio la fetch di ordine completa di tutti i campi (EAGER)
 		Ordine ordineFetch = ordineService.caricaOrdineEager(ordinePerRicercaEager);
 		if (ordineFetch.getArticoli().isEmpty())
 			throw new RuntimeException("errore fetch eager");
@@ -272,6 +296,7 @@ public class MyTest {
 			CategoriaService categoriaService) throws Exception {
 		System.out.println("========== Inizio test ==========");
 
+		// Creo ordine
 		Ordine ordine = new Ordine();
 		if (ordine.getId() != null)
 			throw new RuntimeException("ordine gia presente su db");
@@ -280,6 +305,7 @@ public class MyTest {
 		if (ordine.getId() == null)
 			throw new RuntimeException("errore nell'inserimento dell'ordine");
 
+		// Creo articolo
 		Articolo articoloRemove = new Articolo("articolo", "123", 50, new Date());
 		if (articoloRemove.getId() != null)
 			throw new RuntimeException("articolo gia presente");
@@ -290,6 +316,7 @@ public class MyTest {
 		if (articoloRemove.getId() == null)
 			throw new RuntimeException("errore nell'inserimento dell'articolo");
 
+		// Creo categoria
 		Categoria categoriaAssociata = new Categoria("cosa", "cosa123");
 		if (categoriaAssociata.getId() != null)
 			throw new RuntimeException("categoria gia presente");
@@ -297,17 +324,19 @@ public class MyTest {
 		categoriaService.inserisciNuovo(categoriaAssociata);
 		if (categoriaAssociata.getId() == null)
 			throw new RuntimeException("errore nell'inserimento della categoria");
-		
+
 		Set<Categoria> categorieArticolo = new HashSet<Categoria>();
 		categorieArticolo.add(categoriaAssociata);
-		
+
 		articoloRemove.setCategorie(categorieArticolo);
 		articoloService.aggiorna(articoloRemove);
 
+		// Aggiungo categoria ad articolo
 		articoloService.aggiungiCategoria(categoriaAssociata, articoloRemove);
 		if (articoloRemove.getCategorie().isEmpty())
 			throw new RuntimeException("errore nell'accoppiamento della categoria");
 
+		// Dissocio articolo
 		articoloService.dissociaArticoloDaiCampi(articoloRemove.getId(), categoriaAssociata.getId());
 
 		System.out.println("========== test eseguito con successo ==========");

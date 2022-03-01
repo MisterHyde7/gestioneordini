@@ -26,6 +26,8 @@ public interface ArticoloService {
 	public void rimuoviArticoloSenzaCampi(Articolo articoloInstance) throws Exception;
 	
 	public void dissociaArticoloDaiCampi(Long idArticolo, Long idCategoria) throws Exception;
+	
+	public Long calcolaTotaleOrdinePerCategoria(Categoria categoriaInput) throws Exception;
 
 	// per injection
 	public void setArticoloDAO(ArticoloDAO articoloDAO);

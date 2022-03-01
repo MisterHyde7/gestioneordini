@@ -3,8 +3,10 @@ package it.prova.gestioneordini.dao.articolo;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import it.prova.gestioneordini.model.Articolo;
+import it.prova.gestioneordini.model.Categoria;
 
 public class ArticoloDAOImpl implements ArticoloDAO {
 
@@ -58,9 +60,18 @@ public class ArticoloDAOImpl implements ArticoloDAO {
 
 	@Override
 	public void rimuoviArticoloSenzaAltriCampi(Articolo input) throws Exception {
-		entityManager
-		.createQuery("select a from Articolo a where a.id = :id", Articolo.class);
+		entityManager.createQuery("select a from Articolo a where a.id = :id", Articolo.class);
 		entityManager.setProperty("id", input.getId());
+	}
+
+	@Override
+	public Long dammiIlTotaleDelCostoDiArticoliConCategoria(Categoria categoriaInput) throws Exception {
+
+		TypedQuery<Long> query = entityManager.createQuery(
+				"select sum(a.prezzoSingolo) from Articolo a join a.categorie c where c.codice like :codiceCategoria",
+				Long.class).setParameter("codiceCategoria", categoriaInput.getCodice());
+		return (long) query.getSingleResult();
+
 	}
 
 }

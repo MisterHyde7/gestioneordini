@@ -256,4 +256,25 @@ public class ArticoloServiceImpl implements ArticoloService {
 		}
 	}
 
+	@Override
+	public Long calcolaTotaleOrdinePerCategoria(Categoria categoriaInput) throws Exception {
+		
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			articoloDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return articoloDAO.dammiIlTotaleDelCostoDiArticoliConCategoria(categoriaInput);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+		
+	}
+
 }

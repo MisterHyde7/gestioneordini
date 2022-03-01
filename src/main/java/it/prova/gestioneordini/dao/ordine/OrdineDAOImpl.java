@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import it.prova.gestioneordini.model.Categoria;
 import it.prova.gestioneordini.model.Ordine;
 
 public class OrdineDAOImpl implements OrdineDAO {
@@ -63,6 +64,16 @@ public class OrdineDAOImpl implements OrdineDAO {
 				"select o from Ordine o left join fetch o.articoli a left join fetch a.categorie c where o.id = :idOrdine ",
 				Ordine.class).setParameter("idOrdine", id);
 		return query.getSingleResult();
+	}
+
+	@Override
+	public List<Ordine> dammiTuttiGliOrdiniDataLaCategoria(Categoria categoriaInput) throws Exception {
+		
+		TypedQuery<Ordine> query = entityManager.createQuery(
+				"select distinct o from Ordine o left join o.articoli a left join a.categorie c where c.codice like :categoriaInput ",
+				Ordine.class).setParameter("categoriaInput", categoriaInput.getCodice());
+		return query.getResultList();
+		
 	}
 
 }

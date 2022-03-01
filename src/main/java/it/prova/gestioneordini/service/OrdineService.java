@@ -5,6 +5,7 @@ import java.util.List;
 import it.prova.gestioneordini.dao.articolo.ArticoloDAO;
 import it.prova.gestioneordini.dao.ordine.OrdineDAO;
 import it.prova.gestioneordini.model.Articolo;
+import it.prova.gestioneordini.model.Categoria;
 import it.prova.gestioneordini.model.Ordine;
 
 public interface OrdineService {
@@ -26,6 +27,8 @@ public interface OrdineService {
 	public Ordine caricaOrdineEager(Ordine ordineInstances) throws Exception;
 	
 	public void dissociaOrdineDaArticolo(Long idArticolo, Long idOrdine) throws Exception;
+	
+	public List<Ordine> cercaTuttiGliOrdiniConCategoria(Categoria categoriaInput) throws Exception;
 
 	// per injection
 	public void setOrdineDAO(OrdineDAO ordineDAO);

@@ -6,6 +6,7 @@ import it.prova.gestioneordini.dao.articolo.ArticoloDAO;
 import it.prova.gestioneordini.dao.categoria.CategoriaDAO;
 import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
+import it.prova.gestioneordini.model.Ordine;
 
 public interface ArticoloService {
 
@@ -28,6 +29,8 @@ public interface ArticoloService {
 	public void dissociaArticoloDaiCampi(Long idArticolo, Long idCategoria) throws Exception;
 	
 	public Long calcolaTotaleOrdinePerCategoria(Categoria categoriaInput) throws Exception;
+	
+	public Long dammiTotaleDaPagareDi(Ordine input) throws Exception;
 
 	// per injection
 	public void setArticoloDAO(ArticoloDAO articoloDAO);

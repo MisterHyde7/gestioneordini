@@ -59,6 +59,8 @@ public class MyTest {
 
 			testDammiCategorieTopDiFebbraio(ordineServiceInstance, articoloServiceInstance, categoriaServiceInstance);
 
+			testDammiTotaleOrdine(ordineServiceInstance, articoloServiceInstance);
+
 		} catch (Throwable e) {
 
 			e.printStackTrace();
@@ -734,6 +736,48 @@ public class MyTest {
 		List<Categoria> categorieTop = categoriaService.dammiCategoriaTopDiFebbraio(categoriaDaTrovare);
 		if (categorieTop.isEmpty() || categorieTop == null || categorieTop.size() < 1)
 			throw new RuntimeException("errore nella ricerca delle categorie");
+
+		System.out.println("========== test eseguito con successo ==========");
+
+	}
+
+	private static void testDammiTotaleOrdine(OrdineService ordineService, ArticoloService articoloService)
+			throws Exception {
+
+		System.out.println("========== Inizio test ==========");
+
+		// Creo ordine
+		Ordine ordinePerRicerca = new Ordine("mario rossi", "via rossi",
+				new SimpleDateFormat("dd/MM/yyyy").parse("01/02/2022"));
+		if (ordinePerRicerca.getId() != null)
+			throw new RuntimeException("ordine gia regisrato su database");
+
+		// Inserisco ordine
+		ordineService.inserisciNuovo(ordinePerRicerca);
+		if (ordinePerRicerca.getId() == null)
+			throw new RuntimeException("insert non riuscita");
+
+		// Creo articoli
+		Articolo articoloPerRicerca = new Articolo("latte", "milk", 5, new Date());
+		if (articoloPerRicerca.getId() != null)
+			throw new RuntimeException("articolo gia registrato su database");
+
+		Articolo articoloPerRicerca1 = new Articolo("lavagna", "bb", 50, new Date());
+		if (articoloPerRicerca.getId() != null)
+			throw new RuntimeException("articolo gia registrato su database");
+
+		articoloPerRicerca.setOrdine(ordinePerRicerca);
+		articoloPerRicerca1.setOrdine(ordinePerRicerca);
+
+		// Inserisco articoli
+		articoloService.inserisciNuovo(articoloPerRicerca);
+		articoloService.inserisciNuovo(articoloPerRicerca1);
+		if (articoloPerRicerca.getId() == null || articoloPerRicerca1.getId() == null)
+			throw new RuntimeException("insert non riuscita");
+
+		Long totale = articoloService.dammiTotaleDaPagareDi(ordinePerRicerca);
+		if (totale % 55 != 0)
+			throw new RuntimeException("errore nel calcolo del costo");
 
 		System.out.println("========== test eseguito con successo ==========");
 

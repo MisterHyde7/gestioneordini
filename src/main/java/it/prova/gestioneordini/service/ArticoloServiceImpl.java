@@ -9,6 +9,7 @@ import it.prova.gestioneordini.dao.articolo.ArticoloDAO;
 import it.prova.gestioneordini.dao.categoria.CategoriaDAO;
 import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
+import it.prova.gestioneordini.model.Ordine;
 
 public class ArticoloServiceImpl implements ArticoloService {
 
@@ -267,6 +268,27 @@ public class ArticoloServiceImpl implements ArticoloService {
 
 			// eseguo quello che realmente devo fare
 			return articoloDAO.dammiIlTotaleDelCostoDiArticoliConCategoria(categoriaInput);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+		
+	}
+
+	@Override
+	public Long dammiTotaleDaPagareDi(Ordine input) throws Exception {
+		
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			articoloDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return articoloDAO.dammiTotaleCostoDiUnaPersona(input);
 
 		} catch (Exception e) {
 			e.printStackTrace();

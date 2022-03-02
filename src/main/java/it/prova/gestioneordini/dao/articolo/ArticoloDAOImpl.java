@@ -7,6 +7,7 @@ import javax.persistence.TypedQuery;
 
 import it.prova.gestioneordini.model.Articolo;
 import it.prova.gestioneordini.model.Categoria;
+import it.prova.gestioneordini.model.Ordine;
 
 public class ArticoloDAOImpl implements ArticoloDAO {
 
@@ -70,6 +71,16 @@ public class ArticoloDAOImpl implements ArticoloDAO {
 		TypedQuery<Long> query = entityManager.createQuery(
 				"select sum(a.prezzoSingolo) from Articolo a join a.categorie c where c.codice like :codiceCategoria",
 				Long.class).setParameter("codiceCategoria", categoriaInput.getCodice());
+		return (long) query.getSingleResult();
+
+	}
+
+	@Override
+	public Long dammiTotaleCostoDiUnaPersona(Ordine ordineInput) throws Exception {
+		
+		TypedQuery<Long> query = entityManager.createQuery(
+				"select sum(a.prezzoSingolo) from Articolo a join a.ordine o where o.nomeDestinatario like :nomeDelDestinatario",
+				Long.class).setParameter("nomeDelDestinatario", ordineInput.getNomeDestinatario());
 		return (long) query.getSingleResult();
 
 	}

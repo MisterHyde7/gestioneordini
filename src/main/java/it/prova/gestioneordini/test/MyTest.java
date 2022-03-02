@@ -61,6 +61,8 @@ public class MyTest {
 
 			testDammiTotaleOrdine(ordineServiceInstance, articoloServiceInstance);
 
+			testDammiIndirizziDiArticoliLike(ordineServiceInstance, articoloServiceInstance);
+
 		} catch (Throwable e) {
 
 			e.printStackTrace();
@@ -778,6 +780,57 @@ public class MyTest {
 		Long totale = articoloService.dammiTotaleDaPagareDi(ordinePerRicerca);
 		if (totale % 55 != 0)
 			throw new RuntimeException("errore nel calcolo del costo");
+
+		System.out.println("========== test eseguito con successo ==========");
+
+	}
+
+	private static void testDammiIndirizziDiArticoliLike(OrdineService ordineService, ArticoloService articoloService)
+			throws Exception {
+
+		System.out.println("========== Inizio test ==========");
+
+		// Creo ordini
+		Ordine ordinePerRicerca = new Ordine("laura rossi", "via rossi",
+				new SimpleDateFormat("dd/MM/yyyy").parse("01/02/2022"));
+		if (ordinePerRicerca.getId() != null)
+			throw new RuntimeException("ordine gia regisrato su database");
+
+		Ordine ordinePerRicerca1 = new Ordine("franco rossi", "via verdi",
+				new SimpleDateFormat("dd/MM/yyyy").parse("01/02/2022"));
+		if (ordinePerRicerca.getId() != null)
+			throw new RuntimeException("ordine gia regisrato su database");
+
+		// Inserisco ordin1
+		ordineService.inserisciNuovo(ordinePerRicerca);
+		if (ordinePerRicerca.getId() == null)
+			throw new RuntimeException("insert non riuscita");
+		ordineService.inserisciNuovo(ordinePerRicerca1);
+		if (ordinePerRicerca.getId() == null)
+			throw new RuntimeException("insert non riuscita");
+
+		// Creo articolo
+		Articolo articoloPerRicerca = new Articolo("gomme", "bb", 5, new Date());
+		if (articoloPerRicerca.getId() != null)
+			throw new RuntimeException("articolo gia registrato su database");
+
+		Articolo articoloPerRicerca1 = new Articolo("scatola", "bb", 10, new Date());
+		if (articoloPerRicerca.getId() != null)
+			throw new RuntimeException("articolo gia registrato su database");
+
+		articoloPerRicerca.setOrdine(ordinePerRicerca);
+		articoloPerRicerca1.setOrdine(ordinePerRicerca1);
+
+		// Inserisco articoli
+		articoloService.inserisciNuovo(articoloPerRicerca);
+		articoloService.inserisciNuovo(articoloPerRicerca1);
+		if (articoloPerRicerca.getId() == null || articoloPerRicerca1.getId() == null)
+			throw new RuntimeException("insert non riuscita");
+
+		List<String> listaDiIndirizzi = ordineService
+				.dammiGliIndirizziCheHannoOrdinatoQuestoArticolo(articoloPerRicerca.getNumeroSeriale());
+		if (listaDiIndirizzi.isEmpty() || listaDiIndirizzi == null || listaDiIndirizzi.size() < 2)
+			throw new RuntimeException("errore nella ricerca degli indirizzi");
 
 		System.out.println("========== test eseguito con successo ==========");
 

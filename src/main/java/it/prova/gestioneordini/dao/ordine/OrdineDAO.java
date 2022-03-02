@@ -16,4 +16,6 @@ public interface OrdineDAO extends IBaseDAO<Ordine> {
 
 	public List<Ordine> dammiOrdineRecentePerCategoria(Categoria categoriaInput) throws Exception;
 
+	public List<String> dammiIndirizziDiOrdiniLike(String stringaInput) throws Exception;
+
 }

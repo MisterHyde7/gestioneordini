@@ -32,6 +32,8 @@ public interface OrdineService {
 
 	public Ordine dammiOrdinePiuRecenteDataCategoria(Categoria categoriaInput) throws Exception;
 
+	public List<String> dammiGliIndirizziCheHannoOrdinatoQuestoArticolo(String stringaInput) throws Exception;
+
 	// per injection
 	public void setOrdineDAO(OrdineDAO ordineDAO);
 

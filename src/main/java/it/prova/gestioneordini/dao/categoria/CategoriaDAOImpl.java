@@ -59,12 +59,22 @@ public class CategoriaDAOImpl implements CategoriaDAO {
 
 	@Override
 	public List<Categoria> dammiCategorieDiArticoliInOrdine(Long idOrdine) throws Exception {
-		
+
 		TypedQuery<Categoria> query = entityManager.createQuery(
 				"select distinct c from Categoria c left join c.articoli a left join a.ordine o where o.id = :idOrdine ",
 				Categoria.class).setParameter("idOrdine", idOrdine);
 		return query.getResultList();
-		
+
+	}
+
+	@Override
+	public List<Categoria> dammiTutteLeCategorieOrdinateInQuestoMese(String codiceInput) throws Exception {
+
+		TypedQuery<Categoria> query = entityManager.createQuery(
+				"select distinct c from Categoria c left join c.articoli a left join a.ordine o where c.codice = :codiceInput and o.dataSpedizione > '2022-01-31' and o.dataSpedizione < '2022-03-01'",
+				Categoria.class).setParameter("codiceInput", codiceInput);
+		return query.getResultList();
+
 	}
 
 }

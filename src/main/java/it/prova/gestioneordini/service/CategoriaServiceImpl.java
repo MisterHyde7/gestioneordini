@@ -245,7 +245,27 @@ public class CategoriaServiceImpl implements CategoriaService {
 
 			// eseguo quello che realmente devo fare
 			return categoriaDAO.dammiCategorieDiArticoliInOrdine(ordineInput.getId());
-			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			EntityManagerUtil.closeEntityManager(entityManager);
+		}
+	}
+
+	@Override
+	public List<Categoria> dammiCategoriaTopDiFebbraio(Categoria categoriaInput) throws Exception {
+
+		EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+		try {
+			// uso l'injection per il dao
+			categoriaDAO.setEntityManager(entityManager);
+
+			// eseguo quello che realmente devo fare
+			return categoriaDAO.dammiTutteLeCategorieOrdinateInQuestoMese(categoriaInput.getCodice());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;

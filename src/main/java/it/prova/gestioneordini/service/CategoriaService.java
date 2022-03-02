@@ -27,6 +27,8 @@ public interface CategoriaService {
 	public Categoria caricaCategoriaConArticoli(Categoria categoriaInstance) throws Exception;
 	
 	public List<Categoria> dammiTutteLeCategorieInOrdine(Ordine ordineInput) throws Exception;
+	
+	public List<Categoria> dammiCategoriaTopDiFebbraio(Categoria categoriaInput) throws Exception;
 
 	// per injection
 	public void setCategoriaDAO(CategoriaDAO categoriaDAO);

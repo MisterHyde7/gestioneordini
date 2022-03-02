@@ -10,5 +10,7 @@ public interface CategoriaDAO extends IBaseDAO<Categoria> {
 	public Categoria caricaCategoriaConArticoli() throws Exception;
 	
 	public List<Categoria> dammiCategorieDiArticoliInOrdine(Long idOrdine) throws Exception;
+	
+	public List<Categoria> dammiTutteLeCategorieOrdinateInQuestoMese(String codiceInput) throws Exception;
 
 }
